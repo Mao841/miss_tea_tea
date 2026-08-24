@@ -1,4 +1,4 @@
-import type { MenuItem } from "@/lib/menu";
+import type { MenuItem } from "@/lib/types";
 
 export default function DrinkCard({ drink }: { drink: MenuItem }) {
   return (

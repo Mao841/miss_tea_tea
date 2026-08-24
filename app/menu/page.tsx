@@ -2,14 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import DrinkCard from "@/components/DrinkCard";
 import Footer from "@/components/Footer";
-import { menu } from "@/lib/menu";
+import { getMenu } from "@/lib/data";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Our Menu | Miss Tea Tea",
   description: "Full menu of Miss Tea Tea, bubble tea shop in Leuven, Belgium.",
 };
 
-export default function MenuPage() {
+export default async function MenuPage() {
+  const menu = await getMenu();
   return (
     <main className="bg-background text-foreground">
       <section className="bg-gradient-to-b from-[#ffd6e7] to-[#fff7ef] px-5 py-10 text-center">
