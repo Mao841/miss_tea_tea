@@ -36,6 +36,7 @@ export default async function EditAnnouncementPage({
             title_zh: announcement.title_zh,
             body_en: announcement.body_en,
             body_zh: announcement.body_zh,
+            image_url: announcement.image_url,
             sort_order: announcement.sort_order,
           }}
         />

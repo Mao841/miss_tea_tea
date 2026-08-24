@@ -325,6 +325,74 @@ async function main() {
     read = await sb(`/rest/v1/announcements?select=*&id=eq.${annId}`, { token });
     check("删除测试公告成功", (read.json ?? []).length === 0);
 
+    // ---------- 7b. 公告图片（上传→前台展示→清理） ----------
+    console.log("\n【7b. 公告图片（上传→前台展示→清理）】");
+    const annImgPath = `announcement-test-${Date.now()}.png`;
+    const annPng = Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+      "base64"
+    );
+    const annImgUp = await fetch(`${SUPABASE_URL}/storage/v1/object/images/${annImgPath}`, {
+      method: "POST",
+      headers: { apikey: ANON_KEY, Authorization: `Bearer ${token}`, "Content-Type": "image/png" },
+      body: annPng,
+      signal: AbortSignal.timeout(20000),
+    });
+    check("上传公告图片成功", annImgUp.status === 200, `status=${annImgUp.status}`);
+    const annImgUrl = `${SUPABASE_URL}/storage/v1/object/public/images/${annImgPath}`;
+
+    // sort_order=-1000 → 稳定成为首页第一条活动（promo），用于验证前台展示
+    const annImgCreate = await sb("/rest/v1/announcements", {
+      method: "POST",
+      token,
+      headers: { Prefer: "return=representation" },
+      body: { title_en: "__TEST_ANN_IMG__", title_zh: "测试活动图", body_en: "test", body_zh: "测试", image_url: annImgUrl, is_active: true, sort_order: -1000 },
+    });
+    const annImgId = annImgCreate.json?.[0]?.id;
+    check("创建含图公告成功", Boolean(annImgId), `status=${annImgCreate.status}`);
+
+    read = await sb(`/rest/v1/announcements?select=*&id=eq.${annImgId}`, { token });
+    check("公告 image_url 写库正确", read.json?.[0]?.image_url === annImgUrl);
+
+    r = await appFetch("/");
+    text = await r.text();
+    check("前台首页渲染活动图片", text.includes(encodeURIComponent(annImgUrl)));
+
+    if (cookieValue) {
+      r = await appFetch("/admin/announcements", { cookie: `${AUTH_COOKIE}=${cookieValue}` });
+      const annAdminText = await r.text();
+      check("后台活动列表渲染公告缩略图", annAdminText.includes(encodeURIComponent(annImgUrl)));
+    }
+
+    // 清空图片后首页不再显示该图
+    await sb(`/rest/v1/announcements?id=eq.${annImgId}`, {
+      method: "PATCH",
+      token,
+      body: { image_url: "" },
+    });
+    r = await appFetch("/");
+    text = await r.text();
+    check("清空图片后首页不再显示该图", !text.includes(encodeURIComponent(annImgUrl)));
+
+    await sb(`/rest/v1/announcements?id=eq.${annImgId}`, { method: "DELETE", token });
+    await fetch(`${SUPABASE_URL}/storage/v1/object/images/${annImgPath}`, {
+      method: "DELETE",
+      headers: { apikey: ANON_KEY, Authorization: `Bearer ${token}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    let annImgGone = null;
+    for (let i = 0; i < 4; i++) {
+      const list = await sb("/storage/v1/object/list/images", {
+        method: "POST",
+        token,
+        body: { prefix: annImgPath, limit: 10 },
+      });
+      annImgGone = (list.json ?? []).length === 0;
+      if (annImgGone) break;
+      await sleep(2000);
+    }
+    check("删除后公告图片不残留", annImgGone === true);
+
     // ---------- 8. 店铺设置（写同值，无净变更） ----------
     console.log("\n【8. 店铺设置（写回原值验证写路径）】");
     const settings = await sb("/rest/v1/store_settings?select=*", { token });

@@ -64,5 +64,6 @@ export async function getActiveAnnouncements(): Promise<Announcement[]> {
     titleZh: row.title_zh,
     bodyEn: row.body_en,
     bodyZh: row.body_zh,
+    image: row.image_url || undefined,
   }));
 }

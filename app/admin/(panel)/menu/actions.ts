@@ -2,49 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import { getAdminSupabase, num, str } from "@/lib/admin";
+import { deleteImage, imageFromForm, uploadImage } from "@/lib/images";
 
 export type ActionState = { error?: string } | null;
-
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
-
-function getPublicUrl(path: string): string {
-  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images/${path}`;
-}
-
-function imagePathFromUrl(url: string): string | null {
-  const marker = "/storage/v1/object/public/images/";
-  const index = url.indexOf(marker);
-  return index === -1 ? null : url.slice(index + marker.length);
-}
-
-async function uploadImage(supabase: SupabaseClient, file: File): Promise<string> {
-  if (!file.type.startsWith("image/")) {
-    throw new Error("只能上传图片文件（JPG/PNG/WebP 等）");
-  }
-  if (file.size > MAX_IMAGE_SIZE) {
-    throw new Error("图片不能超过 5MB");
-  }
-  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-  const path = `item-images/${crypto.randomUUID()}.${ext}`;
-  const { error } = await supabase.storage
-    .from("images")
-    .upload(path, await file.arrayBuffer(), { contentType: file.type });
-  if (error) throw new Error(`图片上传失败：${error.message}`);
-  return getPublicUrl(path);
-}
-
-async function deleteImage(supabase: SupabaseClient, url: string) {
-  const path = imagePathFromUrl(url);
-  if (!path) return;
-  await supabase.storage.from("images").remove([path]);
-}
-
-function imageFromForm(formData: FormData): File | null {
-  const value = formData.get("image");
-  return value instanceof File && value.size > 0 ? value : null;
-}
 
 export async function createItem(
   _prev: ActionState,
@@ -82,6 +43,7 @@ export async function updateItem(
 ): Promise<ActionState> {
   const supabase = await getAdminSupabase();
   const imageFile = imageFromForm(formData);
+  const removeImage = formData.get("remove_image") === "on";
   const oldImageUrl = str(formData, "current_image");
   let imageUrl = oldImageUrl;
   if (imageFile) {
@@ -91,6 +53,9 @@ export async function updateItem(
       return { error: e instanceof Error ? e.message : "图片上传失败" };
     }
     if (oldImageUrl) await deleteImage(supabase, oldImageUrl);
+  } else if (removeImage && oldImageUrl) {
+    await deleteImage(supabase, oldImageUrl);
+    imageUrl = "";
   }
   const { error } = await supabase
     .from("menu_items")

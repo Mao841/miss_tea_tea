@@ -36,12 +36,16 @@ create table if not exists public.announcements (
   title_zh    text not null,
   body_en     text not null default '',
   body_zh     text not null default '',
+  image_url   text not null default '',
   is_active   boolean not null default true,
   starts_at   timestamptz,
   ends_at     timestamptz,
   sort_order  int not null default 0,
   created_at  timestamptz not null default now()
 );
+
+-- 兼容已有库：为公告表补充活动图片字段（新建库已含该列，此处幂等安全，可重复执行）
+alter table public.announcements add column if not exists image_url text not null default '';
 
 -- 4. 店铺设置（key-value）
 create table if not exists public.store_settings (

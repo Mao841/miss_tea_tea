@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import DrinkCard from "@/components/DrinkCard";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
@@ -27,11 +28,22 @@ export default async function Home() {
         <h1 className="mt-2.5 text-[45px] font-bold leading-tight">Miss Tea Tea</h1>
         <p className="mt-2.5 text-xl">{slogan}</p>
         {promo && (
-          <p className="mt-2.5 text-xl">
-            🎓 {promo.titleEn} · {promo.titleZh}
-            <br />
-            {promo.bodyEn} · {promo.bodyZh}
-          </p>
+          <div className="mt-2.5">
+            {promo.image && (
+              <Image
+                src={promo.image}
+                alt={promo.titleEn}
+                width={400}
+                height={400}
+                className="mx-auto mb-3 aspect-square w-44 rounded-2xl object-cover shadow-[0_5px_15px_#ddd]"
+              />
+            )}
+            <p className="text-xl">
+              🎓 {promo.titleEn} · {promo.titleZh}
+              <br />
+              {promo.bodyEn} · {promo.bodyZh}
+            </p>
+          </div>
         )}
         <Link
           href="/menu"

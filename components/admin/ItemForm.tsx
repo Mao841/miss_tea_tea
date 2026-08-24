@@ -92,6 +92,10 @@ export default function ItemForm({
             height={96}
             className="mt-1 h-24 w-24 rounded-xl object-cover"
           />
+          <label className="mt-3 flex items-center gap-2 text-sm text-[#4b2e20]">
+            <input type="checkbox" name="remove_image" value="on" />
+            删除现有图片
+          </label>
         </div>
       )}
       <label className={labelCls}>

@@ -25,6 +25,7 @@ export type AnnouncementRow = {
   title_zh: string;
   body_en: string;
   body_zh: string;
+  image_url: string;
   is_active: boolean;
   starts_at: string | null;
   ends_at: string | null;
@@ -46,6 +47,7 @@ export type Announcement = {
   titleZh: string;
   bodyEn: string;
   bodyZh: string;
+  image?: string;
 };
 
 export type StoreSettings = Record<string, { en: string; zh: string }>;

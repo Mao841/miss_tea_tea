@@ -12,7 +12,7 @@ export default function NewAnnouncementPage() {
       <div className="mt-6 rounded-[20px] bg-white p-6 shadow-[0_5px_15px_#ddd]">
         <AnnouncementForm
           action={createAnnouncement}
-          initial={{ title_en: "", title_zh: "", body_en: "", body_zh: "", sort_order: 0 }}
+          initial={{ title_en: "", title_zh: "", body_en: "", body_zh: "", image_url: "", sort_order: 0 }}
         />
       </div>
     </div>

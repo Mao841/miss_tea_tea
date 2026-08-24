@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getSupabase } from "@/lib/supabase/public";
 import type { AnnouncementRow } from "@/lib/types";
 import { deleteAnnouncement, toggleAnnouncement } from "./actions";
@@ -45,6 +46,15 @@ export default async function AdminAnnouncementsPage() {
             className="rounded-[20px] bg-white p-5 shadow-[0_5px_15px_#ddd]"
           >
             <div className="flex flex-wrap items-center gap-3">
+              {announcement.image_url && (
+                <Image
+                  src={announcement.image_url}
+                  alt={announcement.title_en}
+                  width={48}
+                  height={48}
+                  className="h-12 w-12 shrink-0 rounded-xl object-cover"
+                />
+              )}
               <p className="min-w-0 flex-1 font-bold">
                 {announcement.title_en}{" "}
                 <span className="text-sm font-normal text-[#8a7363]">
