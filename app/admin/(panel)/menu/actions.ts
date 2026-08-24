@@ -2,33 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminSupabase, num, str } from "@/lib/admin";
 
 export type ActionState = { error?: string } | null;
-
-// 每个写操作独立校验登录态（RLS 兜底），未登录一律跳转登录页
-async function getAdminSupabase() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    redirect("/admin/login");
-  }
-  return supabase;
-}
-
-function str(formData: FormData, key: string): string {
-  const value = formData.get(key);
-  return typeof value === "string" ? value : "";
-}
-
-function num(formData: FormData, key: string): number | null {
-  const value = formData.get(key);
-  if (typeof value !== "string" || value.trim() === "") return null;
-  const n = Number(value);
-  return Number.isNaN(n) ? null : n;
-}
 
 export async function createItem(
   _prev: ActionState,
