@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import DrinkCard from "@/components/DrinkCard";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 import { getMenu } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +16,7 @@ export default async function MenuPage() {
   const menu = await getMenu();
   return (
     <main className="bg-background text-foreground">
+      <Header />
       <section className="bg-gradient-to-b from-[#ffd6e7] to-[#fff7ef] px-5 py-10 text-center">
         <Link href="/" className="text-4xl no-underline">
           🐼🧋

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { isOwner } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
@@ -15,7 +16,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -23,7 +24,13 @@ export default function LoginPage() {
       setError("登录失败：" + signInError.message);
       return;
     }
-    router.push("/admin");
+    // 老板 → 管理后台；顾客/其他账号 → 留在主界面
+    const user = data.user;
+    if (user && isOwner(user)) {
+      router.push("/admin");
+    } else {
+      router.push("/");
+    }
     router.refresh();
   }
 

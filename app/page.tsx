@@ -1,6 +1,7 @@
 import Link from "next/link";
 import DrinkCard from "@/components/DrinkCard";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 import { getActiveAnnouncements, getMenu, getStoreSettings } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +21,7 @@ export default async function Home() {
 
   return (
     <main className="bg-background text-foreground">
+      <Header />
       <section className="bg-gradient-to-b from-[#ffd6e7] to-[#fff7ef] px-5 py-12 text-center">
         <div className="text-[90px] leading-none">🐼🧋</div>
         <h1 className="mt-2.5 text-[45px] font-bold leading-tight">Miss Tea Tea</h1>
