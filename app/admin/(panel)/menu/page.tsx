@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getSupabase } from "@/lib/supabase/public";
 import type { MenuCategoryRow, MenuItemRow } from "@/lib/types";
 import {
@@ -36,6 +37,15 @@ function CategoryBlock({
         )}
         {items.map((item) => (
           <div key={item.id} className="flex flex-wrap items-center gap-3 py-3">
+            {item.image_url && (
+              <Image
+                src={item.image_url}
+                alt={item.name_en}
+                width={40}
+                height={40}
+                className="h-10 w-10 rounded-lg object-cover"
+              />
+            )}
             <div className="min-w-0 flex-1">
               <p className="font-semibold">
                 {item.name_en}{" "}

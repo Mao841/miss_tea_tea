@@ -37,7 +37,7 @@ export type StoreSettingRow = {
   value_zh: string;
 };
 
-export type MenuItem = { en: string; zh: string };
+export type MenuItem = { en: string; zh: string; image?: string };
 
 export type MenuCategory = { nameEn: string; nameZh: string; items: MenuItem[] };
 

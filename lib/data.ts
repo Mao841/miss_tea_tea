@@ -28,7 +28,11 @@ export async function getMenu(): Promise<MenuCategory[]> {
     nameZh: category.name_zh,
     items: (itemRows ?? [] as MenuItemRow[])
       .filter((item) => item.category_id === category.id && item.is_available)
-      .map((item) => ({ en: item.name_en, zh: item.name_zh })),
+      .map((item) => ({
+        en: item.name_en,
+        zh: item.name_zh,
+        image: item.image_url || undefined,
+      })),
   }));
 }
 

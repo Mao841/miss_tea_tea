@@ -29,6 +29,7 @@ export default async function NewItemPage() {
             description_zh: "",
             price: null,
             sort_order: 0,
+            image_url: "",
           }}
         />
       </div>

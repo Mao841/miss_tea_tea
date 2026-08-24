@@ -40,6 +40,7 @@ export default async function EditItemPage({
             description_zh: item.description_zh,
             price: item.price,
             sort_order: item.sort_order,
+            image_url: item.image_url,
           }}
         />
       </div>
