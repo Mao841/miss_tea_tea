@@ -32,20 +32,13 @@ export default function NavBar({
     <>
       <header className="paper-bg sticky top-0 z-50 shadow-[0_2px_10px_rgba(75,46,32,0.08)]">
         <div className="relative mx-auto flex h-[70px] max-w-[1680px] items-center px-4 sm:px-10">
-          {/* 商标：双击进入老板管理后台；光标保持默认样式（移动端用熊猫图标版） */}
+          {/* 商标：双击进入老板管理后台；光标保持默认样式（手机端也显示完整徽章+文字商标） */}
           <img
             src="/design/logo.png"
             alt="Miss Tea Tea"
             draggable={false}
             onDoubleClick={() => router.push("/admin")}
-            className="hidden h-[60px] w-auto cursor-default select-none sm:block"
-          />
-          <img
-            src="/design/logo-mark.png"
-            alt="Miss Tea Tea"
-            draggable={false}
-            onDoubleClick={() => router.push("/admin")}
-            className="h-[44px] w-auto cursor-default select-none sm:hidden"
+            className="h-[44px] w-auto shrink-0 cursor-default select-none max-[370px]:h-[36px] sm:h-[60px]"
           />
 
           {/* 桌面端导航 */}
@@ -57,7 +50,7 @@ export default function NavBar({
             ))}
           </nav>
 
-          <div className="ml-auto flex items-center gap-2.5 sm:gap-3">
+          <div className="ml-auto flex shrink-0 items-center gap-2.5 sm:gap-3">
             <a
               href={instagramUrl}
               target="_blank"
