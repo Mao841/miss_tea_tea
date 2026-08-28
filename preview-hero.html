@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>hero preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #e8d5c8; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  .stage {
+    position: relative;
+    width: 1350px;
+    height: 900px;
+    overflow: hidden;
+    background:
+      linear-gradient(rgba(139, 69, 19, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139, 69, 19, 0.045) 1px, transparent 1px),
+      linear-gradient(180deg, #f8e2d2 0%, #f6d6c4 45%, #f2c9b6 100%);
+    background-size: 42px 42px, 42px 42px, 100% 100%;
+    box-shadow: 0 12px 40px rgba(75, 46, 32, 0.25);
+  }
+  .stage img { position: absolute; display: block; user-select: none; }
+  .lamp  { left: 1105.4px; top: 69.4px;  width: 133.5px; height: 98.8px; }
+  .board { left: 1116.1px; top: 160.2px; width: 219px;   height: 283px; }
+  .title { left: 74.8px;   top: 149.5px; width: 421.9px; height: 240.3px; }
+  .banner{ left: 53.4px;   top: 379.1px; width: 469.9px; height: 88.1px; }
+  .badges{ left: 112.1px;  top: 453.9px; width: 347.1px; height: 160.2px; }
+  .desk  { left: 0; bottom: 0; width: 1350px; height: 279.8px; }
+  .logo  { left: 37.4px; top: 2.7px; width: 379.2px; height: 77.4px; }
+  .girl  { left: 555.4px; top: 106.8px; width: 598.1px; height: 753px; }
+  .glow  {
+    position: absolute;
+    left: 494.5px; top: 73.3px; width: 720px; height: 820px;
+    background: radial-gradient(closest-side, rgba(254,217,204,0.92) 0%, rgba(254,217,204,0.55) 52%, rgba(254,217,204,0) 78%);
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <img class="desk"  src="public/design/desk.png" alt="" />
+    <div class="glow"></div>
+    <img class="girl"  src="public/design/girl.png" alt="" />
+    <img class="title" src="public/design/title.png" alt="" />
+    <img class="banner" src="public/design/banner.png" alt="" />
+    <img class="badges" src="public/design/badges.png" alt="" />
+    <img class="lamp"  src="public/design/lamp.png" alt="" />
+    <img class="board" src="public/design/blackboard.png" alt="" />
+    <img class="logo"  src="public/design/logo.png" alt="" />
+  </div>
+</body>
+</html>

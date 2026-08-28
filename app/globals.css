@@ -1,17 +1,139 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fff7ef;
+  --background: #f8e2d2;
   --foreground: #4b2e20;
+  --cream: #f8e2d2;
+  --cream-deep: #f6d6c4;
+  --blush: #f2c9b6;
+  --pink: #ffd6e7;
+  --brown: #4b2e20;
+  --brown-deep: #8b4513;
+  --brown-dark: #7a3d11;
+  --wood: #d69472;
+  --wood-light: #f5ab92;
+  --wood-dark: #8a4c35;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-cream: var(--cream);
+  --color-cream-deep: var(--cream-deep);
+  --color-blush: var(--blush);
+  --color-pink: var(--pink);
+  --color-brown: var(--brown);
+  --color-brown-deep: var(--brown-deep);
+  --color-brown-dark: var(--brown-dark);
+  --color-wood: var(--wood);
+  --color-wood-light: var(--wood-light);
+  --color-wood-dark: var(--wood-dark);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* 手账风纸张背景：网格 + 暖色渐变（沿用设计图米色纸张质感） */
+.paper-bg {
+  background:
+    linear-gradient(rgba(139, 69, 19, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 69, 19, 0.05) 1px, transparent 1px),
+    linear-gradient(180deg, #f8e2d2 0%, #f6d6c4 45%, #f2c9b6 100%);
+  background-size: 42px 42px, 42px 42px, 100% 100%;
+}
+
+/* 圆润手写感字体 */
+.font-display {
+  font-family: var(--font-baloo), ui-rounded, "Segoe UI", sans-serif;
+}
+
+.font-cn {
+  font-family: var(--font-kuaile), var(--font-baloo), sans-serif;
+}
+
+/* 黑板粉笔风标题 */
+.chalk-title {
+  font-family: var(--font-baloo), "Comic Sans MS", cursive;
+}
+
+/* 锚点 section：为 sticky 导航条（70px）预留滚动偏移 */
+.section-anchor {
+  scroll-margin-top: 70px;
+}
+
+/* Hero 主图：强制随容器宽度等比缩放 */
+.hero-img {
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  max-width: 100% !important;
+}
+
+/* NEWS 气泡：女孩头顶公告提示，点击滚动到 NEWS 区 */
+.news-bubble {
+  position: absolute;
+  left: 63.29%;
+  top: 6px;
+  transform: translateX(-50%);
+  background: #fff8ef;
+  border: 5px solid #4b2e20;
+  border-radius: 999px;
+  padding: 14px 36px;
+  font-family: var(--font-baloo), ui-rounded, "Segoe UI", sans-serif;
+  font-size: clamp(24px, 2.8vw, 38px);
+  font-weight: 700;
+  color: #4b2e20;
+  box-shadow: 0 4px 12px rgba(75, 46, 32, 0.2);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.news-bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -17px;
+  transform: translateX(-50%);
+  border: 9px solid transparent;
+  border-top: 10px solid #4b2e20;
+}
+
+.news-bubble::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top: 7px solid #fff8ef;
+  z-index: 1;
+}
+
+/* 移动端：气泡缩小，避免超出窄屏被裁切 */
+@media (max-width: 640px) {
+  .news-bubble {
+    border-width: 4px;
+    padding: 8px 18px;
+    font-size: 18px;
+  }
+
+  .news-bubble::after {
+    bottom: -14px;
+    border-width: 7px;
+    border-top-width: 8px;
+  }
+
+  .news-bubble::before {
+    bottom: -7px;
+    border-width: 5px;
+    border-top-width: 6px;
+  }
 }

@@ -18,5 +18,5 @@ export default async function AdminPanelLayout({
   if (!isOwner(user)) {
     redirect("/");
   }
-  return <>{children}</>;
+  return <div className="paper-bg min-h-screen">{children}</div>;
 }

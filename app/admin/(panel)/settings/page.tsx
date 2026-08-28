@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { getSupabase } from "@/lib/supabase/public";
 import type { StoreSettingRow } from "@/lib/types";
+import Toast, { DONE_TEXT } from "@/components/admin/Toast";
 import { saveSettings } from "./actions";
 
 const settingsConfig = [
   { key: "hero_slogan", label: "Hero 标语", hint: "首页大标题下方的标语" },
-  { key: "address", label: "地址", hint: "显示在「📍 Visit Us」区块" },
-  { key: "opening_hours", label: "营业时间", hint: "如 Mon-Sun: 11:00 - 21:00" },
-  { key: "instagram", label: "Instagram", hint: "如 @MissTeaTea" },
+  { key: "address", label: "地址", hint: "显示在 Contact 区块" },
+  { key: "opening_hours", label: "营业时间", hint: "如 Mon-Sun: 11:00 - 21:00（支持换行）" },
+  { key: "phone", label: "电话", hint: "如 +32 16 00 00 00（留空则前台不显示）" },
+  { key: "instagram", label: "Instagram", hint: "右上角图标跳转链接，建议填完整 URL：https://www.instagram.com/xxx（填用户名则只显示文字）" },
 ];
 
 const inputCls =
@@ -15,7 +17,12 @@ const inputCls =
 const btnPrimary =
   "mt-8 w-full rounded-full bg-[#8b4513] py-3 text-white hover:bg-[#7a3d11]";
 
-export default async function AdminSettingsPage() {
+export default async function AdminSettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ done?: string }>;
+}) {
+  const { done } = await searchParams;
   const supabase = getSupabase();
   const { data: rows } = await supabase.from("store_settings").select("*");
   const settings = new Map(
@@ -24,6 +31,7 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-5 py-8">
+      {done && <Toast text={DONE_TEXT[done] ?? "已完成 ✓"} />}
       <Link href="/admin" className="text-sm text-[#8b4513] underline">
         ← 返回后台首页
       </Link>

@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# e2e 截图产物与本地工具目录
+/test-screenshots/
+.dsh-vision-router/

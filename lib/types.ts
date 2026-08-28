@@ -38,7 +38,14 @@ export type StoreSettingRow = {
   value_zh: string;
 };
 
-export type MenuItem = { en: string; zh: string; image?: string };
+export type MenuItem = {
+  en: string;
+  zh: string;
+  image?: string;
+  descriptionEn: string;
+  descriptionZh: string;
+  price: number | null;
+};
 
 export type MenuCategory = { nameEn: string; nameZh: string; items: MenuItem[] };
 
@@ -51,3 +58,52 @@ export type Announcement = {
 };
 
 export type StoreSettings = Record<string, { en: string; zh: string }>;
+
+export type AboutEntryRow = {
+  id: string;
+  title_en: string;
+  title_zh: string;
+  body_en: string;
+  body_zh: string;
+  image_url: string;
+  sort_order: number;
+};
+
+export type AboutImageRow = {
+  id: string;
+  about_entry_id: string;
+  image_url: string;
+  sort_order: number;
+};
+
+export type GalleryPhotoRow = {
+  id: string;
+  image_url: string;
+  caption_en: string;
+  caption_zh: string;
+  sort_order: number;
+};
+
+export type AboutEntry = {
+  titleEn: string;
+  titleZh: string;
+  bodyEn: string;
+  bodyZh: string;
+  image?: string;
+  images: string[];
+};
+
+export type GalleryPhoto = {
+  image: string;
+  captionEn: string;
+  captionZh: string;
+};
+
+export type MessageRow = {
+  id: string;
+  nickname: string;
+  body: string;
+  image_url: string;
+  is_read: boolean;
+  created_at: string;
+};

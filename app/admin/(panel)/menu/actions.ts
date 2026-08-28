@@ -7,6 +7,14 @@ import { deleteImage, imageFromForm, uploadImage } from "@/lib/images";
 
 export type ActionState = { error?: string } | null;
 
+async function nextSortOrder(table: "menu_items" | "menu_categories"): Promise<number> {
+  const supabase = await getAdminSupabase();
+  const { count } = await supabase
+    .from(table)
+    .select("id", { count: "exact", head: true });
+  return count ?? 0;
+}
+
 export async function createItem(
   _prev: ActionState,
   formData: FormData
@@ -29,11 +37,11 @@ export async function createItem(
     description_zh: str(formData, "description_zh"),
     price: num(formData, "price"),
     image_url: imageUrl,
-    sort_order: num(formData, "sort_order") ?? 0,
+    sort_order: num(formData, "sort_order") ?? (await nextSortOrder("menu_items")),
   });
   if (error) return { error: error.message };
   revalidatePath("/admin/menu");
-  redirect("/admin/menu");
+  redirect("/admin/menu?done=saved");
 }
 
 export async function updateItem(
@@ -72,7 +80,7 @@ export async function updateItem(
     .eq("id", id);
   if (error) return { error: error.message };
   revalidatePath("/admin/menu");
-  redirect("/admin/menu");
+  redirect("/admin/menu?done=saved");
 }
 
 export async function toggleItem(formData: FormData) {
@@ -85,6 +93,7 @@ export async function toggleItem(formData: FormData) {
     .eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath("/admin/menu");
+  redirect("/admin/menu?done=updated");
 }
 
 export async function deleteItem(formData: FormData) {
@@ -99,6 +108,7 @@ export async function deleteItem(formData: FormData) {
   const { error } = await supabase.from("menu_items").delete().eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath("/admin/menu");
+  redirect("/admin/menu?done=deleted");
 }
 
 export async function createCategory(formData: FormData) {
@@ -106,10 +116,11 @@ export async function createCategory(formData: FormData) {
   const { error } = await supabase.from("menu_categories").insert({
     name_en: str(formData, "name_en"),
     name_zh: str(formData, "name_zh"),
-    sort_order: num(formData, "sort_order") ?? 0,
+    sort_order: num(formData, "sort_order") ?? (await nextSortOrder("menu_categories")),
   });
   if (error) throw new Error(error.message);
   revalidatePath("/admin/menu");
+  redirect("/admin/menu?done=saved");
 }
 
 export async function updateCategory(formData: FormData) {
@@ -124,6 +135,7 @@ export async function updateCategory(formData: FormData) {
     .eq("id", str(formData, "id"));
   if (error) throw new Error(error.message);
   revalidatePath("/admin/menu");
+  redirect("/admin/menu?done=saved");
 }
 
 export async function deleteCategory(formData: FormData) {
@@ -133,5 +145,31 @@ export async function deleteCategory(formData: FormData) {
     .delete()
     .eq("id", str(formData, "id"));
   if (error) throw new Error(error.message);
+  revalidatePath("/admin/menu");
+  redirect("/admin/menu?done=deleted");
+}
+
+// 拖拽排序：按传入的 id 顺序重写 sort_order
+export async function reorderCategories(ids: string[]) {
+  const supabase = await getAdminSupabase();
+  for (let i = 0; i < ids.length; i++) {
+    const { error } = await supabase
+      .from("menu_categories")
+      .update({ sort_order: i })
+      .eq("id", ids[i]);
+    if (error) throw new Error(error.message);
+  }
+  revalidatePath("/admin/menu");
+}
+
+export async function reorderItems(ids: string[]) {
+  const supabase = await getAdminSupabase();
+  for (let i = 0; i < ids.length; i++) {
+    const { error } = await supabase
+      .from("menu_items")
+      .update({ sort_order: i })
+      .eq("id", ids[i]);
+    if (error) throw new Error(error.message);
+  }
   revalidatePath("/admin/menu");
 }

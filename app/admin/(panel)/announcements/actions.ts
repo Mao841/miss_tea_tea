@@ -10,6 +10,14 @@ export type ActionState = { error?: string } | null;
 // 活动图片统一放 announcement-images/ 分区
 const IMAGE_FOLDER = "announcement-images";
 
+async function nextSortOrder(): Promise<number> {
+  const supabase = await getAdminSupabase();
+  const { count } = await supabase
+    .from("announcements")
+    .select("id", { count: "exact", head: true });
+  return count ?? 0;
+}
+
 export async function createAnnouncement(
   _prev: ActionState,
   formData: FormData
@@ -30,11 +38,11 @@ export async function createAnnouncement(
     body_en: str(formData, "body_en"),
     body_zh: str(formData, "body_zh"),
     image_url: imageUrl,
-    sort_order: num(formData, "sort_order") ?? 0,
+    sort_order: num(formData, "sort_order") ?? (await nextSortOrder()),
   });
   if (error) return { error: error.message };
   revalidatePath("/admin/announcements");
-  redirect("/admin/announcements");
+  redirect("/admin/announcements?done=saved");
 }
 
 export async function updateAnnouncement(
@@ -71,7 +79,7 @@ export async function updateAnnouncement(
     .eq("id", id);
   if (error) return { error: error.message };
   revalidatePath("/admin/announcements");
-  redirect("/admin/announcements");
+  redirect("/admin/announcements?done=saved");
 }
 
 export async function toggleAnnouncement(formData: FormData) {
@@ -84,6 +92,7 @@ export async function toggleAnnouncement(formData: FormData) {
     .eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath("/admin/announcements");
+  redirect("/admin/announcements?done=updated");
 }
 
 export async function deleteAnnouncement(formData: FormData) {
@@ -97,5 +106,18 @@ export async function deleteAnnouncement(formData: FormData) {
   if (row?.image_url) await deleteImage(supabase, row.image_url);
   const { error } = await supabase.from("announcements").delete().eq("id", id);
   if (error) throw new Error(error.message);
+  revalidatePath("/admin/announcements");
+  redirect("/admin/announcements?done=deleted");
+}
+
+export async function reorderAnnouncements(ids: string[]) {
+  const supabase = await getAdminSupabase();
+  for (let i = 0; i < ids.length; i++) {
+    const { error } = await supabase
+      .from("announcements")
+      .update({ sort_order: i })
+      .eq("id", ids[i]);
+    if (error) throw new Error(error.message);
+  }
   revalidatePath("/admin/announcements");
 }

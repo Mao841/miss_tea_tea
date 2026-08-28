@@ -1,12 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Server Action 请求体默认只允许 1MB，手机上传的原图常超限导致 500。
-  // 这里放宽到 6MB，并刻意大于 lib/images.ts 里 5MB 的应用层上限，
-  // 让超 5MB 的图走应用层的友好提示（"图片不能超过 5MB"）而不是框架层直接崩溃。
+  // Server Action 请求体上限：单张图片应用层限制 5MB（lib/images.ts），
+  // About 支持一次多选多张（最多约 4-5 张），这里放宽到 25MB，
+  // 确保任何“单张≤5MB”的组合都不会被框架层拦截，超限走应用层的友好提示。
   experimental: {
     serverActions: {
-      bodySizeLimit: "6mb",
+      bodySizeLimit: "25mb",
     },
   },
   images: {
